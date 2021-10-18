@@ -54,22 +54,23 @@ body {
   align-items: center;
 }
 
-.clock {
+.time {
   color: var(--font-titles);
   font-size: 2rem;
+  font-weight: 500;
   margin-top: 5rem;
 }
 
-.project-list {
+.project-container {
   margin: 5rem 0 0 1rem;
   font-size: 1.5rem;
 }
 
-.project-list h3 {
+.project-container h3 {
   color: var(--font-titles);
 }
 
-li {
+.project-container li {
   list-style: circle;
   font-size: 1.2rem;
   color: var(--font-secondary-color);
@@ -77,13 +78,13 @@ li {
   padding: 0.15rem;
 }
 
-li:hover {
+.project-container li:hover {
   text-decoration: underline;
   color: black;
 }
 
 .active-project {
-  color: var(--font-color);
+  color: var(--font-color) !important;
   font-size: inherit;
   font-weight: 700;
 }
@@ -98,7 +99,7 @@ form {
   margin-left: -1.4rem;
 }
 
-.add {
+.new-project-field {
   background: transparent;
   font-size: 1rem;
   border: none;
@@ -108,11 +109,11 @@ form {
   order: 2;
 }
 
-.add:focus {
+.new-project-field:focus {
   border-bottom-width: 2px;
 }
 
-.add:focus::placeholder {
+.new-project-field:focus::placeholder {
   opacity: 0.2;
 }
 
@@ -144,18 +145,56 @@ form {
   margin: 5rem 0 3rem 0;
   font-size: 1.8rem;
   border-bottom: 1px solid #adb5bd;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.tasks-list li {
-  border-bottom: 1px solid #adb5bd;
+.delete-project {
+  height: 1.5rem;
+  cursor: pointer;
+}
+
+.project-bin-icon {
+  height: 1.5rem;
 }
 
 .task {
   font-size: 1.1rem;
   margin-bottom: 1.1rem;
   border-bottom: 1px solid #868e96;
+  display: grid;
+  grid-template-columns: 1fr 0.4fr;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.task-name {
+  grid-column: 1 / -1;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+}
+
+.task-description {
+  font-size: 0.85rem;
+  color: var(--font-secondary-color);
+  margin-left: 1.7rem;
+}
+
+input.task-due-date[type="date"] {
+  cursor: pointer;
+  border: none;
+  font-size: 0.85rem;
+  color: var(--font-secondary-color);
+}
+
+.task-due-date {
+  margin-right: 0.8rem;
+}
+
+.tasks-list li {
+  border-bottom: 1px solid #adb5bd;
 }
 
 .task label {
@@ -189,7 +228,7 @@ form {
   position: absolute;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 0.85px;
   background: #868e96;
 }
 
@@ -198,15 +237,21 @@ form {
   box-shadow: inset 0 0 0 2px white;
 }
 
+.task-bin-icon {
+  height: 1.2rem;
+  width: 1.2rem;
+  color: var(--font-primary-color);
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.task-bin-icon:hover {
+  display: inline-block;
+}
+
 /* *********************************************
                   add-task-modal
 ********************************************* */
-.add-task-outer-container {
-  width: 20rem;
-  height: 10rem;
-  position: relative;
-}
-
 .add-task-container {
   position: relative;
   transition: all 250ms ease-in;
@@ -218,20 +263,24 @@ form {
 }
 
 .modal {
-  position: absolute;
-  top: -1rem;
-  left: 0;
   display: none;
+}
+
+.modal-form {
+  position: absolute;
+  top: -1.2rem;
+  left: 1.4rem;
+  /* display: none; */
   display: grid;
   grid-template-columns: 1fr 0.6fr;
-  height: 7rem;
+  height: 5.5rem;
   width: 40rem;
   border: 1px solid #adb5bd;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.modal input {
+.modal-form input {
   padding: 0.7rem;
   border: none;
   border-radius: 5px;
@@ -242,23 +291,26 @@ form {
   grid-column: 1 / -1;
 }
 
-.btn-modal-container {
-  position: absolute;
-  bottom: -8.5rem;
-  left: 0;
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: space-evenly;
-}
-
 .btn-modal {
   padding: 0.5rem;
   border: 1px solid #868e96;
   border-radius: 5px;
 }
+.btn-modal-cancel {
+  position: absolute;
+  top: 6rem;
+  left: 5rem;
+}
 
 .btn-modal-add {
-  padding: 0 1rem 0 1rem;
+  position: absolute;
+  top: 6.15rem;
+  padding: 0 1.2rem 0 1.2rem;
   color: white;
+  padding: 0.5rem 1.2rem;
   background: #37b24d;
 }
+
+/* [type="date"] {
+  cursor: pointer;
+} */
