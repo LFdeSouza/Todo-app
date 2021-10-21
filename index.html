@@ -33,11 +33,11 @@
 
     <div class="tasks-container">
       <div class="tasks-menu">
-        <h3 class="tasks-title">
-          Please select a project
+        <div class="tasks-title">
+          <h3>Please select a project</h3>
           <span class="delete-project">
             <svg
-              class="project-bin-icon"
+              class="project-del-icon"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -51,7 +51,7 @@
               ></path>
             </svg>
           </span>
-        </h3>
+        </div>
         <div class="tasks-list">
           <div class="task done">
             <div class="task-name">
@@ -61,7 +61,7 @@
                 app</label
               >
               <svg
-                class="task-bin-icon"
+                class="task-del-icon"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -118,10 +118,10 @@
     <template id="task-template">
       <div class="task">
         <div class="task-name">
-          <input type="checkbox" id="task-1" />
+          <input type="checkbox" />
           <label><span class="custom-checkbox"></span></label>
           <svg
-            class="task-bin-icon"
+            class="task-del-icon"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -135,10 +135,10 @@
             ></path>
           </svg>
         </div>
-        <p class="task-description"></p>
-        <input class="task-due-date" type="date" />
+        <p class="task-description">Description</p>
+        <input class="task-due-date" type="date" value="2020-07-20" />
       </div>
     </template>
-    <script src="/src/index.js" defer></script>
+    <script src="./main.js" defer></script>
   </body>
 </html>
