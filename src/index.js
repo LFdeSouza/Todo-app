@@ -1,3 +1,5 @@
+import TodoList from "./todoList";
+
 const time = document.querySelector(".time");
 const addProject = document.querySelector(".add-project");
 
@@ -18,70 +20,6 @@ function addZeroToClock(time) {
   return parseInt(time) < 10 ? "0" + time : time;
 }
 
-const TodoList = (function () {
-  let savedProjects = JSON.parse(localStorage.getItem("projectList")) || [];
-
-  const addProject = function (project) {
-    savedProjects.push(project);
-    localStorage.setItem("projectList", JSON.stringify(savedProjects));
-  };
-
-  const saveSelectedProject = function (id) {
-    savedProjects.forEach((project) => {
-      if (project.id === id) {
-        localStorage.setItem("selectedProject", JSON.stringify(project));
-      }
-    });
-  };
-
-  const getSelectedProjectId = function () {
-    const project = JSON.parse(localStorage.getItem("selectedProject")) || null;
-    if (project) {
-      return project.id;
-    }
-  };
-
-  const getSelectedProjectName = function () {
-    const project = JSON.parse(localStorage.getItem("selectedProject")) || null;
-    if (project) {
-      return project.name;
-    }
-  };
-
-  const addTask = function (taskName, description, dueDate) {
-    const task = new Task(taskName, description, dueDate);
-    const currentProject = savedProjects.findIndex(
-      (project) => project.id === getSelectedProjectId()
-    );
-    savedProjects[currentProject].tasks.push(task);
-  };
-
-  return {
-    savedProjects,
-    addProject,
-    saveSelectedProject,
-    getSelectedProjectId,
-    getSelectedProjectName,
-    addTask,
-  };
-})();
-
-class Project {
-  constructor(name) {
-    this.id = Math.random().toString();
-    this.name = name;
-    this.tasks = [];
-  }
-}
-
-class Task {
-  constructor(taskName, description, dueDate) {
-    this.taskName = taskName;
-    this.description = description;
-    this.dueDate = dueDate;
-  }
-}
-
 //Event: Load page
 window.addEventListener("load", (e) => {
   showTime();
@@ -97,9 +35,8 @@ const projectsList = document.querySelector(".project-list");
 //Event: Add book upon submission
 projectForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const newProjectName = projectInputField.value;
-  if (newProjectName === "" || newProjectName === null) return;
-  const newProject = new Project(newProjectName);
+  const newProject = projectInputField.value;
+  if (newProject === "" || newProject === null) return;
   TodoList.addProject(newProject);
   renderProjects();
   projectInputField.value = null;
@@ -126,16 +63,14 @@ projectsList.addEventListener("click", (e) => {
 });
 
 //DOM elements from tasks section
+const taskProjectTitle = document.querySelector(".tasks-title h3");
+const deleteProjectBtn = document.querySelector(".delete-project");
 const tasksList = document.querySelector(".tasks-list");
-const taskProjectTitle = document.querySelector(".tasks-title");
+const taskTemplate = document.querySelector("#task-template");
 const openModalBtn = document.querySelector(".open-modal");
 const addTaskModal = document.querySelector(".modal");
 const taskForm = document.querySelector(".modal-form");
-const addTaskBtn = document.querySelector("btn-modal-add");
 const btnModalCancel = document.querySelector(".btn-modal-cancel");
-const taskTemplate = document.querySelector("#task-template");
-const taskTemplateContent = taskTemplate.content.cloneNode(true);
-const taskContainer = document.querySelector(".task");
 const taskName = document.querySelector(".add-task-field");
 const description = document.querySelector(".add-task-description");
 const dueDate = document.querySelector("#task-due-date");
@@ -143,6 +78,7 @@ const dueDate = document.querySelector("#task-due-date");
 //Event: open Modal
 openModalBtn.addEventListener("click", (e) => {
   openTaskModal();
+  taskName.focus();
 });
 
 //Event: close Modal
@@ -154,16 +90,70 @@ btnModalCancel.addEventListener("click", (e) => {
 taskForm.addEventListener("submit", (e) => {
   e.preventDefault();
   TodoList.addTask(taskName.value, description.value, dueDate.value);
-
   closeTaskModal();
+  renderTasks();
 });
 
-function renderTasks() {
-  taskProjectTitle.textContent = TodoList.getSelectedProjectName();
-  tasksList.innerHTML = ""; // clear list
+//Event: complete Task
+tasksList.addEventListener("click", (e) => {
+  if (e.target.tagName.toLowerCase() === "input") {
+    TodoList.markCompletedTask(e.target);
+  }
+});
 
-  // TodoList.tasks
-  // taskTemplateContent.querySelector("label").textContent =
+//Event: delete task
+tasksList.addEventListener("click", (e) => {
+  if (e.target.classList.contains("task-del-icon")) {
+    TodoList.deleteTask(e.target);
+    renderTasks();
+  }
+});
+
+//Event: Update task due date
+tasksList.addEventListener("change", (e) => {
+  if (e.target.classList.contains("task-due-date")) {
+    TodoList.updateDueDate(e.target);
+    renderTasks();
+  }
+});
+
+//Event: delete project
+deleteProjectBtn.addEventListener("click", (e) => {
+  TodoList.removeProject();
+  renderProjects();
+  renderTasks();
+});
+
+function renderTaskTitle() {
+  const currProject = TodoList.getSelectedProjectName();
+  taskProjectTitle.textContent = currProject;
+}
+
+function renderTasks() {
+  const currProject = TodoList.getSelectedProjectName();
+  tasksList.innerHTML = ""; // clear list
+  renderTaskTitle();
+
+  const tasks = TodoList.getTasks();
+  tasks.forEach((task) => {
+    const taskElement = taskTemplate.content.cloneNode(true);
+    const taskName = taskElement.querySelector(".task-name label");
+    const checkBox = taskElement.querySelector(".task-name input");
+    const taskDescription = taskElement.querySelector(".task-description");
+    const taskDueDate = taskElement.querySelector(".task-due-date");
+    const taskDeleteBtn = taskElement.querySelector(".task-del-icon");
+
+    checkBox.id = task.id;
+    checkBox.checked = task.completed;
+    taskName.htmlFor = task.id;
+    taskName.append(task.taskName);
+    taskDescription.textContent = task.description;
+    taskDueDate.id = task.id;
+    taskDueDate.value = task.dueDate;
+    taskDeleteBtn.id = task.id;
+
+    tasksList.appendChild(taskElement);
+  });
 }
 
 function openTaskModal() {
