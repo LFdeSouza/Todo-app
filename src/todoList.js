@@ -52,10 +52,14 @@ export default class TodoList {
 
   static getSelectedProjectIndex() {
     const project = JSON.parse(localStorage.getItem("selectedProject")) || null;
-    const currentProject = this.savedProjects.findIndex(
-      (project) => project.id === this.getSelectedProjectId()
-    );
-    return currentProject;
+    if (project === null) {
+      return null;
+    } else {
+      const currentProject = this.savedProjects.findIndex(
+        (project) => project.id === this.getSelectedProjectId()
+      );
+      return currentProject;
+    }
   }
 
   static removeProject() {
@@ -68,13 +72,21 @@ export default class TodoList {
   static addTask(taskName, description, dueDate) {
     const task = new Task(taskName, description, dueDate);
     const currentProject = this.getSelectedProjectIndex();
-    this.savedProjects[currentProject].tasks.push(task);
-    this.updateStorage();
+    if (currentProject === null) {
+      alert("Please select a Project");
+    } else {
+      this.savedProjects[currentProject].tasks.push(task);
+      this.updateStorage();
+    }
   }
 
   static getTasks() {
     const currentProject = this.getSelectedProjectIndex();
-    return this.savedProjects[currentProject].tasks;
+    if (currentProject === null) {
+      return [];
+    } else {
+      return this.savedProjects[currentProject].tasks || [];
+    }
   }
 
   static markCompletedTask(selectedTask) {

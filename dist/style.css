@@ -134,6 +134,7 @@ form {
 .tasks-container {
   display: flex;
   justify-content: center;
+  overflow: scroll;
 }
 
 .tasks-menu {

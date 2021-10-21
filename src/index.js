@@ -94,20 +94,25 @@ taskForm.addEventListener("submit", (e) => {
   renderTasks();
 });
 
-//Event: complete Task
+//Event: complete and delete Task
 tasksList.addEventListener("click", (e) => {
   if (e.target.tagName.toLowerCase() === "input") {
     TodoList.markCompletedTask(e.target);
   }
-});
 
-//Event: delete task
-tasksList.addEventListener("click", (e) => {
   if (e.target.classList.contains("task-del-icon")) {
     TodoList.deleteTask(e.target);
     renderTasks();
   }
 });
+
+//Event: delete task
+// tasksList.addEventListener("click", (e) => {
+//   if (e.target.classList.contains("task-del-icon")) {
+//     TodoList.deleteTask(e.target);
+//     renderTasks();
+//   }
+// });
 
 //Event: Update task due date
 tasksList.addEventListener("change", (e) => {
